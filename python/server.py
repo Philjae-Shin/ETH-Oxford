@@ -22,10 +22,13 @@ def compute():
     # permutations() will generate duplicates if there are repeated '1's or '0's;
     # we use set() to remove duplicates.
     unique_perms = set(permutations(initial_list))
+
+    # Filter permutations to exclude palindromes
+    filtered_perms = {perm for perm in unique_perms if perm <= tuple(reversed(perm))}
     
 
     results = []
-    for perm in unique_perms:
+    for perm in filtered_perms:
         # perm is a tuple like ('1', '0', '1', ...)
         perm_str = ''.join(perm)
 
