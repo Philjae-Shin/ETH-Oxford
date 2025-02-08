@@ -13,11 +13,11 @@ def compute():
     and return all results as JSON.
     """
     data = request.get_json()
-    num_ones = data.get('num_ones', 0)
-    num_zeros = data.get('num_zeros', 0)
+    num_ones = data.get('num_a', 0)
+    num_zeros = data.get('num_b', 0)
 
     # 1) Build the initial list of characters, e.g. if num_ones=2 and num_zeros=1, we get ["1", "1", "0"].
-    initial_list = ['1'] * num_ones + ['0'] * num_zeros
+    initial_list = ['a'] * num_ones + ['b'] * num_zeros
 
     # permutations() will generate duplicates if there are repeated '1's or '0's;
     # we use set() to remove duplicates.
