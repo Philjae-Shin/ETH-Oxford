@@ -80,3 +80,61 @@ obj/
 .idea/inspectionProfiles/Project_Default.xml
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/ETH-Oxford.iml
+
+# ==============================================
+# Haskell + Stack/Cabal .gitignore Template
+# ==============================================
+
+# Build artifacts
+/dist*/
+//dist-*/
+/stack-work/
+/.cabal-sandbox/
+
+# Cabal/Stack config
+.cabal/
+*.cabal.local
+*.cabal.lock
+cabal.project.local
+cabal.project.local.newwork
+
+# GHCi usage
+.ghc.environment.*
+*.hie
+*.hi
+
+# .stack
+.stack-work/
+.stack-work-dist
+
+# Executables
+*.o
+*.dyn_o
+*.dyn_hi
+*.p_hi
+*.p_o
+*.so
+*.exe
+
+# Stack or Cabal binary outputs
+*.prof
+*.aux
+*.hp
+
+# Local dev environment config
+/.env
+/.local/
+
+# (Optional) Vim / Emacs / VSCode / JetBrains IDE temp files
+*~
+*.swp
+*.swo
+*.dump
+.idea/
+.vscode/
+*.iml
+
+# OS-specific
+.DS_Store
+Thumbs.db
+ehthumbs.db
