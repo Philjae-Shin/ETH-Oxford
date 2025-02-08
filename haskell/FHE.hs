@@ -1,4 +1,4 @@
-module FHE where
+module Main where
 
 import System.Random
 import Data.Bits
@@ -275,7 +275,7 @@ keyGen ctx = do
   let asE = polyCRTAdd ctx as e
   let pk0 = zipWith (\inf pol -> map (negMod (theMod inf)) pol) (ctxNTTData ctx) asE
   let pk1 = a
-  s2 <- polyCRTMul ctx s s
+  let s2 = polyCRTMul ctx s s
   a2 <- genUniformPolyCRT ctx
   e2 <- genSmallPolyCRT ctx
   let a2s2 = polyCRTMul ctx a2 s2
@@ -372,8 +372,8 @@ demoMain :: IO ()
 demoMain = do
   ctx <- initFHEContext defaultFHEParams
   (s, pk, rk) <- keyGen ctx
-  let msgA = [1, 2, 3, 0, 4, 5]
-  let msgB = [2, 1, 1, 1, 0]
+  let msgA = []
+  let msgB = []
   ctA <- encrypt ctx pk msgA
   ctB <- encrypt ctx pk msgB
   let decA = decrypt ctx s ctA
@@ -396,3 +396,6 @@ forM_ = flip mapM_
 
 replaceAtVec :: MV.MVector s a -> Int -> a -> ST s ()
 replaceAtVec v i x = MV.write v i x
+
+main :: IO()
+main = demoMain
