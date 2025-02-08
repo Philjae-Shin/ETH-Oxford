@@ -22,6 +22,7 @@ def compute():
     # permutations() will generate duplicates if there are repeated '1's or '0's;
     # we use set() to remove duplicates.
     unique_perms = set(permutations(initial_list))
+    
 
     results = []
     for perm in unique_perms:
