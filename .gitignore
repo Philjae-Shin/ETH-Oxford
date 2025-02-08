@@ -138,3 +138,8 @@ cabal.project.local.newwork
 .DS_Store
 Thumbs.db
 ehthumbs.db
+
+# virtual environments
+myenv/
+py-3.10
+
