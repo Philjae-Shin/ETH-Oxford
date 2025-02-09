@@ -1,65 +1,61 @@
-import numpy as np
+import numpy
+from numpy.ma.core import transpose, innerproduct
 from numpy.polynomial import Polynomial as Poly
-def sample_small_poly(n, sigma):
-    return Poly(np.round(np.random.normal(0, sigma, n)) % q)
-# Sample a uniform polynomial (used for public key generation)
-def sample_uniform_poly(n, q):
-    return Poly(np.random.randint(0, q, n))  # Random coefficients in [0, q)
-def generate_keys(n, q, sigma):
-    """
-    Generate Ring-LWE keys: (public key, private key)
-    """
-    s = sample_small_poly(n, sigma)  # Secret key (small polynomial)
-    a = sample_uniform_poly(n, q)  # Random public polynomial
-    e = sample_small_poly(n, sigma)  # Error polynomial (small noise)
+import math
+import random
+def generate_modulus(n, epsilon):
+    lower_bound = 2 ** (n ** epsilon)
+    upper_bound = 2 * lower_bound
+    # Generate a random odd number in the range [lower_bound, upper_bound]
+    q = numpy.random.randint(lower_bound, upper_bound)
+    # Ensure q is odd
+    if q % 2 == 0:
+        q += 1
+    return q
+def sampleNoise(q,n,l):
+    return numpy.random.randint(0, high=q, size = (l, n))
+def randomMatrix(m,n,q):
+    return numpy.random.randint(0, high=q, size=(n, m))
+def BGen(n,q, tau, sample ,samplen1, i,j,l):
+    return numpy.inner(numpy.random.randint(0, high=q, size=(l, n)), sample) + 2*numpy.random.randint(0, high=q) + (2^tau * samplen1[i] * samplen1[j])
 
-    # Compute b = a * s + e mod q
-    b = (a * s + e) % q
-    public_key = (a, b)
-    private_key = s
+def BGen0(n,q, tau, sample,l):
+    return numpy.inner(numpy.random.randint(0, high=q, size=(l, n)), sample) + 2+numpy.random.randint(0, high=q) +2^tau
+def fullset(n,  q, samples, tau,l):
+    bigset = []
+    for sample in range (0, len(samples)):
+        for i  in range(0,n):
+            for j in range(i,n):
+                for i in range(0, tau):
+                    if sample !=0:
+                        bigset.append([numpy.random.randint(0,q, size =n), BGen(n,q, tau, samples[sample] ,samples[sample-1], i,j,l)])
+                        bigset.append([numpy.random.randint(0, q, size =n), BGen0(n, q, tau, samples[sample], l)])
+    return bigset
 
-    return public_key, private_key
 
-# Generate keys
-public_key, private_key = generate_keys(n, q, sigma)
-print("Public Key (a, b):", public_key)
-print("Private Key (s):", private_key)
+def keyGen(n, m):
+    q =  generate_modulus(n, 0.5)
+    l = round(0.5*math.log(n,2))
+    print(q)
+    samples = sampleNoise(q,n,l)
+    evk = fullset(n, q, samples, round(math.log(q,2)),l)
+    A = numpy.random.randint(0,q, size =(n,m))
+    e = numpy.random.randint(0,q, size =(m))
+    b = A+(2 *e)
+    print (b)
+    privatekey = samples[-1]
+    print(privatekey)
+    return privatekey , A, b, q
 
-def encrypt(public_key, message, n, q, sigma):
-    """
-    Encrypt a message using Ring-LWE encryption.
-    """
-    a, b = public_key
-    m = Poly([message] + [0] * (n - 1))  # Encode message as a polynomial
-    # Sample small noise polynomials
-    e1 = sample_small_poly(n, sigma)
-    e2 = sample_small_poly(n, sigma)
-    u = sample_small_poly(n, sigma)  # Random small polynomial
+def encryption(A,b,m, bit):
+    r = numpy.random.randint(0,1,size = m)
+    v = A*r
+    w = b*r + bit
+    return [[v,w],0]
 
-    # Compute ciphertext c1 and c2
-    c1 = (a * u + e1) % q
-    c2 = (b * u + e2 + (q // 2) * m) % q  # Embed message in c2
+def decryption(cypher, s,q):
+    return ((cypher[0][1] - innerproduct(transpose(cypher[0][0]), s))%q%2)[0][0]
+privatekey , A, b, q = keyGen(50,30)
 
-    return c1, c2
-
-# Encrypt message
-message = 100  # Message should be small (binary {0,1})
-ciphertext = encrypt(public_key, message, n, q, sigma)
-print("Ciphertext (c1, c2):", ciphertext)
-
-def decrypt(private_key, ciphertext, n, q):
-    """
-    Decrypt a Ring-LWE ciphertext.
-    """
-    s = private_key
-    c1, c2 = ciphertext
-    # Compute v = c2 - s * c1 mod q
-    v = (c2 - s * c1) % q
-    # Decode message: check if v is closer to 0 or q/2
-    threshold = q // 4  # Halfway between 0 and (q/2)
-    m_decoded = 1 if np.round(v.coef[0]) > threshold else 0
-    return m_decoded
-
-# Decrypt ciphertext
-decrypted_message = decrypt(private_key, ciphertext, n, q)
-print("Decrypted Message:", decrypted_message)
+def encryptNum(num):
+    binary =bin(num)[2:].zfill(8)
