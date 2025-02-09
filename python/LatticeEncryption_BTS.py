@@ -100,7 +100,7 @@ def dimension_modulus_reduction(long_cipher, KSW, q, p):
 ############################################################
 
 def bts_keygen(sh_privkey, q,
-               k=16,    # e.g., the "reduced" dimension
+k=16,    # e.g., the "reduced" dimension
                p=127):  # e.g., the "reduced" modulus
     """
     Generates a new secret key hat_s for the "short dimension/modulus" scheme (BTS),
@@ -163,7 +163,7 @@ def bts_decrypt(ct_hat, hat_s, p):
     :return: The recovered bit (0 or 1)
     """
     (v_hat, w_hat) = ct_hat
-    val = (w_hat - np.dot(v_hat, hat_s)) % p
+    val = (w_hat - np.inner(v_hat, hat_s)) % p
     return val % 2
 
 ############################################################
@@ -229,6 +229,16 @@ def bts_eval_mul(ct1, ct2, hat_s, p):
     product = (bit1 * bit2) % 2
     return bts_encrypt(product, hat_s, p)
 
+def bts_eval_Not(ct1, hat_s, p):
+    """
+    For a real FHE multiplication, noise grows significantly,
+    requiring bootstrapping or key switching.
+    Here we simply "partial-decrypt -> multiply -> re-encrypt" as a toy example.
+    """
+    bit1 = bts_decrypt(ct1, hat_s, p)
+    return bts_encrypt(bit1 +1 %2, hat_s, p)
+
+
 ############################################################
 # (7) Main Test
 ############################################################
@@ -244,7 +254,7 @@ if __name__ == "__main__":
     # Example: p=257 (a prime), although real usage is more specialized.
 
     # 3) For example, encrypt bit=1 in the old scheme
-    ct_sh = LatticeEncryption.encryption(A, b, 30, 0)
+    ct_sh = LatticeEncryption.encryption(A, b, 30, 1)
     # Suppose the result is ((v, w), depth)
 
     # 4) Bootstrapping (simplified):
@@ -256,11 +266,13 @@ if __name__ == "__main__":
     dec_bit = bts_decrypt(ct_bts, hat_s, p)
     print(f"BTS decrypted bit: {dec_bit}")
 
-    # 6) Demo: short ciphertext addition/multiplication
+    # 6) Demo: short ciphertext addition/multiplication/Not
     ct_bts_zero = bts_encrypt(0, hat_s, p)
+    ct_not = bts_eval_Not(ct_bts_zero , hat_s, p)
     ct_sum = bts_eval_add(ct_bts, ct_bts_zero, p)
     ct_mul = bts_eval_mul(ct_bts, ct_bts, hat_s, p)
 
+    print("Not result:", bts_decrypt(ct_not, hat_s, p))
     print("Add result:", bts_decrypt(ct_sum, hat_s, p))
     print("Mul result:", bts_decrypt(ct_mul, hat_s, p))
 
