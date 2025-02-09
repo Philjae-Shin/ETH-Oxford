@@ -1,4 +1,5 @@
 import numpy
+from numpy.ma.core import transpose, innerproduct
 from numpy.polynomial import Polynomial as Poly
 import math
 import random
@@ -40,9 +41,20 @@ def keyGen(n, m):
     evk = fullset(n, q, samples, round(math.log(q,2)),l)
     A = numpy.random.randint(0,q, size =(n,m))
     e = numpy.random.randint(0,q, size =(m))
-    B = A+(2 *e)
-    print (B)
+    b = A+(2 *e)
+    print (b)
     privatekey = samples[-1]
     print(privatekey)
-    return privatekey , A, B
-keyGen(50, 30 )
+    return privatekey , A, b, q
+
+def encryption(A,b,m, bit):
+    r = numpy.random.randint(0,1,size = m)
+    v = A*r
+    w = b*r + bit
+    return [[v,w],0]
+
+def decryption(cypher, s,q):
+    return (cypher[0][1] - innerproduct(transpose(cypher[0][0]), s))%q%2
+privatekey , A, b, q = keyGen(50,30)
+cypher =encryption(A,b,30,1)
+print (decryption(cypher, privatekey, q))
