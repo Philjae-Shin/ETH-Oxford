@@ -56,5 +56,6 @@ def encryption(A,b,m, bit):
 def decryption(cypher, s,q):
     return (cypher[0][1] - innerproduct(transpose(cypher[0][0]), s))%q%2
 privatekey , A, b, q = keyGen(50,30)
-cypher =encryption(A,b,30,1)
-print (decryption(cypher, privatekey, q))
+
+def encryptNum(num):
+    binary =bin(num)[2:].zfill(8)
