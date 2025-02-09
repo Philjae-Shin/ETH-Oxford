@@ -55,7 +55,24 @@ def encryption(A,b,m, bit):
 
 def decryption(cypher, s,q):
     return ((cypher[0][1] - innerproduct(transpose(cypher[0][0]), s))%q%2)[0][0]
-privatekey , A, b, q = keyGen(50,30)
 
-def encryptNum(num):
-    binary =bin(num)[2:].zfill(8)
+def encryptBin(A,b,m,binary):
+    data =[]
+    for i in binary:
+        data.append(encryption(A,b,m,int(i)))
+    return data
+
+def encryptNum(A,b,m,num):
+    binary =bin(num)[2:]
+    return encryptBin(A,b,m,binary)
+
+def decryptBin(data,s,q):
+    message =""
+    for i in data:
+        message += str(decryption(i,s,q))
+    return message
+s, A, b, q = keyGen(50,30)
+data = encryptNum(A,b,30,100)
+print(int(decryptBin(data,s,q), 2))
+
+
