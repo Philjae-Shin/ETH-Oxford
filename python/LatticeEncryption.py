@@ -72,4 +72,12 @@ def decryptBin(data,s,q):
         message += str(decryption(i,s,q))
     return message
 
+def homorphicAdd(data):
+    l = data[1]
+    data.sum()
+    data[1] = l
+    return data
+
+def mult(cypher1, cypher2):
+        l = data[1]+1
 
