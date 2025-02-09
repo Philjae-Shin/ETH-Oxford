@@ -77,9 +77,14 @@ def main():
 
 
     # Homomorphically add the two ciphertexts.
-    ctxt_sum = ctxt1 + ctxt2
-    
-
+    ctxt_sum = ctxt1 + 2*ctxt2 + 3
+    ctxt_sum_array = np.array([ctxt_sum], dtype=object)
+    print(ctxt_sum_array)
+    tmp = HE.decryptPtxt(ctxt_sum_array[0])
+    temp = np.dot(2, ctxt1) + 1
+    temp = HE.decryptPtxt(temp)
+    temp = HE.decodeInt(temp)
+    print(temp)
     print("\nEncrypted sum (ciphertext):", ctxt_sum)
 
     # Decrypt the resulting ciphertext using decryptPtxt to obtain a PyPtxt object.
