@@ -22,8 +22,8 @@ Key points include:
 - **`LatticeEncryption.py`**  
   Implements our lattice-based encryption and decryption functions using Ring-LWE. This file forms the basis of our FHE scheme.
 
-- **`mlpForwardFHE.hs`**  
-  A Haskell implementation showcasing our homomorphic operations and integration with Python for FHE tools. Most of the Haskell files were stepping stones that helped us arrive at our finished program.
+- **`mlp-forwardpass.hs`**  
+  A Haskell implementation of a forward pass neural network to be implemented with the lattice encryption for confidential training.
 
 ## Project Status and Next Steps
 
@@ -37,16 +37,11 @@ We have successfully verified the correctness of our homomorphic forward propaga
 *Installation instructions and detailed running steps will be specified later. For now, focus on the following main files:*
 - `neuralnet-forwardpropag.py`
 - `LatticeEncryption.py`
-- `mlpForwardFHE.hs`
+- `mlp-forwardpass.hs`
 
 Example command for Python (ensure Pyfhel and PyTorch are installed):
 ```bash
 python neuralnet-forwardpropag.py
-```
-
-For the Haskell portion, if desired:
-```bash
-ghc mlpForwardFHE.hs -o mlpForwardFHE && ./mlpForwardFHE
 ```
 
 ## Conclusion
