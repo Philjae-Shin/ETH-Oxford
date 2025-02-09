@@ -236,7 +236,7 @@ def bts_eval_mul(ct1, ct2, hat_s, p):
 if __name__ == "__main__":
     # 1) Generate SH keys from the original code
     #    privatekey, A, b, q = keyGen(50,30)
-    sh_privkey, A, b, q = LatticeEncryption.keyGen(n=50, m=30)
+    sh_privkey, A, b, q,evk = LatticeEncryption.keyGen(n=50, m=30)
     #  -> sh_privkey is length ~n=50 (actually the last noise vector etc.)
 
     # 2) Generate BTS keys (short dimension/modulus)
@@ -244,7 +244,7 @@ if __name__ == "__main__":
     # Example: p=257 (a prime), although real usage is more specialized.
 
     # 3) For example, encrypt bit=1 in the old scheme
-    ct_sh = LatticeEncryption.encryption(A, b, 30, 1)
+    ct_sh = LatticeEncryption.encryption(A, b, 30, 0)
     # Suppose the result is ((v, w), depth)
 
     # 4) Bootstrapping (simplified):

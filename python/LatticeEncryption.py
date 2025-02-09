@@ -45,7 +45,7 @@ def keyGen(n, m):
     print (b)
     privatekey = samples[-1]
     print(privatekey)
-    return privatekey , A, b, q
+    return privatekey, A, b, q, evk
 
 def encryption(A,b,m, bit):
     r = numpy.random.randint(0,1,size = m)
@@ -71,8 +71,5 @@ def decryptBin(data,s,q):
     for i in data:
         message += str(decryption(i,s,q))
     return message
-s, A, b, q = keyGen(50,30)
-data = encryptNum(A,b,30,100)
-print(int(decryptBin(data,s,q), 2))
 
 
