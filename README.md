@@ -52,3 +52,20 @@ Our project demonstrates the potential of using FHE to build AI models that neve
 
 *For further updates and detailed instructions on running the project, please check back or contact our team.*
 Blockchain-themed hackathon at Oxford University
+
+
+## What we did:
+
+implemented FHE 
+
+took a simple neural network (mlp) with only 3 layers 
+and performed forward propagation through the model on encrypted data.
+
+All the calculations (ormodifications?) where done on the homomorpho encrypted data.
+
+What leads us to belive that if we can implement forward propagation on data encrypted using FHE,
+
+it should be possible to also train on the encrypted data - without the model seeing or knowing what it is.
+
+Other interestring use case **privacy preserving neural network** 
+so users data would be kept confidential. 
